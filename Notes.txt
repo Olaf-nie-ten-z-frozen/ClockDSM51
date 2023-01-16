@@ -1,0 +1,10 @@
+    SCON - rejestr strefy SFR SCON przeznaczony jest do programowego sterowania pracą portu
+    SBUF - rejestr strefy SFR SBUF jest rejestrem buforowym dla danych wysyłanych i odbieranych.
+Umozliwia zapamiętywanie a później odczytanie informacji. SBUF skłąda się z dwóch rejestrów pod 
+tym samym adresem (rejestr nadajnika(zapisywanie) oraz odbiornika (odczytu))
+    T0 i T1 Bity kontrolne liczników
+Do sterowania pracą liczików T0 i T1 słuą bity kontrolne zgrupowane w rejestrach TMOD i TCON. 
+Rejestr TCON jest używany do rozpoczynania lub zatrzymywania liczników. Rejestr TMOD jest przeznaczony do określenia trybu 
+pracy oraz sposobu pracy liczników T0 i T1.
+    PCON 
+Rejestr PCON(Power control) słuzy do sterowania trybami zasiania. Kontroler może być ustawiony w tryb Idle Mode I Power Down mode
