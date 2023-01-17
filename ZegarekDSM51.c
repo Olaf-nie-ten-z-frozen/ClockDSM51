@@ -7,7 +7,7 @@
 //tablica przechowująca szablon cyfr dla wyświetlacza 7-segmentowego
 __code unsigned char WZOR[10] = { 0b0111111, 0b0000110, 0b1011011, 0b1001111, 0b1100110, 0b1101101, 0b1111101, 0b0000111, 0b1111111, 0b1101111 };
 
-__sbit __at(0x97) TESTLED //LED TESTOWY
+__sbit __at(0x97) TESTLED //LED TESTOWY P1.7
 __bit __at (0x96) SEG_OFF; //wył/wł wyświetlacza 7-segmentowego
 
 unsigned char sekundy = 0; //zmienna przechowująca sekundy
@@ -34,12 +34,12 @@ void seg7Init(){
     }
 }
 void timerInit(){
-    SCON = 0b01010000; //ustawienie trybu pracy UART (konfiguracja portu szeregowego)
+    //SCON = 0b01010000; //ustawienie trybu pracy UART (konfiguracja portu szeregowego)
     TMOD = 0b00100001; //ustawienie trybu pracy timera 0 i 1
-    PCON &= 0b011111111; //ustawienie SMOD na 0 (1 komorka w rejestrze adr. 87H)
+    //PCON &= 0b011111111; //ustawienie SMOD na 0 (1 komorka w rejestrze adr. 87H)
 
-    TH0 = 250; //Do przeładowania T0 4 razy aby otrzymać 900 przerwań co sekundę
-    TL0 = 0;
+    TH0 = 252; //Do przeładowania T0 4 razy aby otrzymać 900 przerwań co sekundę dla trybu 0 
+    TL0 = 124; //żeby policzyc do 132 dla trybu 1
     TH1 = 250; //TODO
     TL1 = 250;
     TR0 = 1; //uruchomienie timera 0
