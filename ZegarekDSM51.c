@@ -16,10 +16,10 @@ unsigned char sekundy = 0; //zmienna przechowuj ca sekundy
 unsigned char minuty = 0; //zmienna przechowuj ca minuty
 unsigned char godziny = 0; //zmienna przechowuj ca godziny
 
-//Do trybu edycji potrzebne są jeszcze minuty, sekundy i godziny które będą siedziały w pamięci
-unsigned char sekundy_pam = 0;
-unsigned char minuty_pam = 0;
-unsigned char godziny_pam = 0;
+// //Do trybu edycji potrzebne są jeszcze minuty, sekundy i godziny które będą siedziały w pamięci
+// unsigned char sekundy_pam = 0;
+// unsigned char minuty_pam = 0;
+// unsigned char godziny_pam = 0;
 
 
 unsigned char wybierak = 0; //zmienna przechowuj ca wybrana jednostke czasu do zmienienia
@@ -38,7 +38,7 @@ __xdata unsigned char* led_wyb = (__xdata unsigned char *) 0xFF30; //rejestr wyb
 __xdata unsigned char* led_led = (__xdata unsigned char *) 0xFF38; //rejestr wyboru cyfry do wy wietlenia
 
 //flagi
-__bit flagInterruptT0 = FALSE; //flaga przerwania timera 0
+__bit flagPrzerwT0 = FALSE; //flaga przerwania timera 0
 __bit flagSecoundPassed = FALSE; //flaga przerwania sekund
 __bit editMode = FALSE; //flaga ustalająca czy jest tryb edycji czy nie
 
@@ -58,12 +58,8 @@ void timerInit(){
     //PCON &= 0b011111111; //ustawienie SMOD na 0 (1 komorka w rejestrze adr. 87H)
 
     TH0 = 252; //Do prze adowania T0 4 razy aby otrzyma  900 przerwa  co sekund  dla trybu 0 
-    TL0 = 124; // eby policzyc do 132 dla trybu 1
-    TH1 = 250; //TODO
-    TL1 = 250;
+    TL0 = 124; //Zeby policzyc do 132 dla trybu 1
     TR0 = 1; //uruchomienie timera 0
-    TR1 = 1; //uruchomienie timera 1
-    TF1 = 0; //wyzerowanie flagi przerwania timera 1
 }
 void aktWys(){  // aktualizacja wy wietlacza 7-segmentowego
     if(iteratorWys == 0){ //sekundy sS
@@ -85,6 +81,7 @@ void aktWys(){  // aktualizacja wy wietlacza 7-segmentowego
         daneWys[5] = godziny / 10;
     }
 }
+//funkcja mierzaca czas 
 void aktCzas(){
     if(flagSecoundPassed == TRUE){
         sekundy++;
@@ -103,11 +100,12 @@ void aktCzas(){
         }
     }
 }
+//Wyswietlanie na wys 7 seg
 void wyswietl(){
-    SEG_OFF = TRUE; //wy  czenie wy wietlacza 7-segmentowego
+    SEG_OFF = TRUE; //wyl wyswietlacza 7-segmentowego aby nie bylo efektu "ghostingu"
     *led_wyb = wybranyWys; //wybranie wy wietlacza 7-segmentowego
     *led_led = WZOR[daneWys[iteratorWys]]; //wybranie cyfry do wy wietlenia
-    SEG_OFF = FALSE; //w  czenie wy wietlacza 7-segmentowego
+    SEG_OFF = FALSE; //włączenie wy wietlacza 7-segmentowego
 }
 //OBSLUGA KLAWIATURY
 void _trybEdycji(){
@@ -122,11 +120,16 @@ void _trybEdycji(){
     }
 }
 void obslugaKbrd(){
-    //Strzalka w dol 
-    if(kbrd & 0b00010000){
+    if()
+}
+void przerwT0(){
+    TH0 = 252;
+    flagPrzerwT0 = 1; //jest w trakcie przerwania
+    if(trybEdycji == 0){
+        licznikT0++;
     }
-    //Strzalka w gore
-    if(kbrd & 0b00100000){
+    if(licznikT0 >= 900){
+        flagSecoundPassed = 1;
     }
 }
 void main()
@@ -134,8 +137,8 @@ void main()
     seg7Init(); //inicjalizacja wy wietlacza 7-segmentowego
     timerInit(); //inicjalizacja timera
     While(TRUE){
-        if(flagInterruptT0 == TRUE){
-        flagInterruptT0 = FALSE;
+        if(flagPrzerwtT0 == TRUE){
+        flagPrzerwT0 = FALSE;
         
         aktCzas(); //aktualizacja czasu
         aktWys(); //aktualizacja wyswietlacza 7-segmentowego
